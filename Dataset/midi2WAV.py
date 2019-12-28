@@ -14,15 +14,6 @@ def savepdf(path):
 
     pgui.keyDown('ctrl')
     pgui.keyDown('shift')
-    pgui.keyDown('s')
-    pgui.keyUp('ctrl')
-    pgui.keyUp('shift')
-    pgui.keyUp('s')
-
-    pgui.typewrite(['a','.','m','s','s','enter'])
-
-    pgui.keyDown('ctrl')
-    pgui.keyDown('shift')
     pgui.keyDown('alt')
     pgui.keyDown('e')
     pgui.keyUp('ctrl')
@@ -43,16 +34,18 @@ def savepdf(path):
     pgui.typewrite(['enter'])
 
     pgui.keyDown('alt')
+    pgui.keyDown('t')
+    pgui.keyUp('alt')
+    pgui.keyUp('t')
+
+    pgui.typewrite(['down','w','enter'])
+
+    pgui.keyDown('alt')
     pgui.keyDown('s')
     pgui.keyUp('alt')
     pgui.keyUp('s')
 
     time.sleep(1.5)
-
-    pgui.keyDown('ctrl')
-    pgui.keyDown('z')
-    pgui.keyUp('ctrl')
-    pgui.keyUp('z')
 
     pgui.keyDown('alt')
     pgui.keyDown('space')
