@@ -10,7 +10,7 @@ def savepdf(path):
     pyperclip.copy(str(path.parent))
     subprocess.Popen('{}'.format(path), shell=True)
     
-    time.sleep(4)
+    time.sleep(5)
 
     pgui.keyDown('ctrl')
     pgui.keyDown('shift')
@@ -40,12 +40,14 @@ def savepdf(path):
 
     pgui.typewrite(['down','w','enter'])
 
+    time.sleep(3)
+
     pgui.keyDown('alt')
     pgui.keyDown('s')
     pgui.keyUp('alt')
     pgui.keyUp('s')
 
-    time.sleep(1.5)
+    time.sleep(2.5)
 
     pgui.keyDown('alt')
     pgui.keyDown('space')
@@ -54,7 +56,7 @@ def savepdf(path):
 
     pgui.typewrite(['c'])
 
-    time.sleep(2)
+    time.sleep(3)
 
 if __name__ == "__main__":
     first_dir = os.getcwd()
@@ -65,7 +67,7 @@ if __name__ == "__main__":
             Save_Path = name2.resolve()
             Midi_Folders = pathlib.Path('{}/'.format(Save_Path)).glob('*.mid')
             for Midi_Folder in Midi_Folders:
-                Do_check = list(pathlib.Path('{}/'.format(name2)).glob('{}.pdf'.format(Midi_Folder.stem)))
+                Do_check = list(pathlib.Path('{}/'.format(name2)).glob('{}.WAV'.format(Midi_Folder.stem)))
                 print(Midi_Folder)
                 
                 if len(Do_check) == 0:

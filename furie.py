@@ -1,32 +1,78 @@
+#coding:utf-8
+
 import numpy as np
 import wave
-import pyaudio
 import matplotlib.pyplot as plt
+from joblib import Parallel,delayed
+from scipy.stats import norm 
+import pathlib
+import os
+import re
 
-def ReadWavFile(FileName):
-    try:
-        wr = wave.open(FileName, "r")
-    except FileNotFoundError: #ファイルが存在しなかった場合
-        print("[Error 404] No such file or directory: " + FileName)
-        return 0
-    data = wr.readframes(wr.getnframes())
-    wr.close()
-    x = np.frombuffer(data, dtype="int16") / float((2^15))
+def wave_load(filename):
+    # open wave file
+    wf = wave.open(filename,'r')
+    channels = wf.getnchannels()
 
-    #音声波形表示
-    plt.figure(figsize=(15,3))
-    plt.plot(x)
-    plt.show()
-    
+    # load wave data
+    chunk_size = wf.getnframes()
+    amp  = (2**8) ** wf.getsampwidth() / 2
+    data = wf.readframes(chunk_size)   # バイナリ読み込み
+    data = np.frombuffer(data,'int16') # intに変換
+    data = data / amp                  # 振幅正規化
+    data = data[::channels]
 
-    #--------------------------------------------------------------------------
-    #        おまけ：numpyで高速フーリエ変換して、グラフ表示
-    #--------------------------------------------------------------------------
-    x = np.fft.fft(np.frombuffer(data, dtype="int16"))
-    plt.figure(figsize=(15,3))
-    plt.plot(x.real[:int(len(x)/2)])
-    plt.show()
-    
-    
-if __name__ is "__main__":
-    ReadWavFile("original.wav") 
+    return data
+
+def furie(Wave_Filename):
+    print(Wave_Filename)
+    fs = 8000.0
+    d = 1.0 / fs
+    size = 200000
+    wave1 = wave_load(os.path.basename(Wave_Filename))
+    wave2 = wave_load(os.path.basename(Wave_Filename).replace('original','practice'))
+
+    big_size = wave1.shape[0] if wave1.shape[0] < wave2.shape[0] else wave2.shape[0]
+
+    size = size if size < big_size else big_size
+
+    dt1 = np.fft.fft(wave1[0:0+size])
+    dt2 = np.fft.fft(wave2[0:0+size])
+    print(size)
+    dt3 = dt2 - dt1
+    frq = np.fft.fftfreq(size,d)
+
+    np.savetxt("a.txt",dt1)
+    input()
+
+    """
+    plt.subplot(1,1,1)
+    plt.title("FFT - recorder_A4")
+    plt.plot(frq,abs(dt3))
+    plt.axis([0,fs/2,0,max(abs(dt3))])
+    """
+
+    if size != 200000:
+        X_0 = np.zeros((200000-size))
+        print(X_0.shape)
+        np.savetxt("Furie_Difference{}.txt".format(re.findall('_[0-9]',str(Wave_Filename))[0]),np.append(dt3,X_0))
+    else:
+        np.savetxt("Furie_Difference{}.txt".format(re.findall('_[0-9]',str(Wave_Filename))[0]),dt3)
+
+    #plt.show()
+if __name__ == "__main__":
+    #originalとpracticeのパスを取得する
+    first_dir = os.getcwd()
+    music_name_path = pathlib.Path('Dataset').glob('*')
+    for name1 in music_name_path:
+        practice_number = pathlib.Path('Dataset/',name1.name).glob('*')
+        for name2 in practice_number:
+            Save_Path = 'Dataset/{}/{}/'.format(name1.name,name2.name)
+            Original =  list(pathlib.Path('Dataset/{}/{}/'.format(name1.name,name2.name)).glob('original*wav'))
+            Do_check =  list(pathlib.Path('Dataset/{}/{}/'.format(name1.name,name2.name)).glob('Furie*'))
+            if(len(Original) != 0 ):
+                for A_Original in Original:
+                    Original_path=(os.path.dirname(A_Original))
+                    os.chdir(Save_Path)
+                    furie(A_Original)    
+                    os.chdir(first_dir)
