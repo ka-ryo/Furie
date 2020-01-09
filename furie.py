@@ -57,12 +57,12 @@ def furie(Wave_Filename):
     c = abs(c)
     N=c.shape[0]
     #np.savetxt("a.txt",c)
-    """
+    
     plt.title(Wave_Filename)
     freqList = np.fft.fftfreq(N, d=1.0/samplerate)
     plt.plot(freqList, c, linestyle='-')
     plt.show()
-    """
+    
     return c
 
 
@@ -104,11 +104,11 @@ if __name__ == "__main__":
                         Sabun = np.append(Sabun,Zero_array)
                     np.savetxt("Furie_Difference{}.txt".format(re.findall('_[0-9]',str(os.path.basename(A_Original)))[0]),Sabun)
                     
-                    """
+                    
                     plt.title('sabun')
                     plt.plot(Sabun, linestyle='-')
                     plt.show()
-                    """
+                    
                     os.chdir(first_dir)
    
 
