@@ -40,7 +40,7 @@ if __name__ == "__main__":
                     Furie_Array.append((np.loadtxt("Furie_Difference{}.txt".format(re.findall('_[0-9]',str(A_Original))[0]))))
                     os.chdir(first_dir)
     
-    pred = KMeans(n_clusters=8, max_iter=1000).fit_predict(Furie_Array)
+    pred = KMeans(n_clusters=8, max_iter=10000).fit_predict(Furie_Array)
     
     """
     for i in range(len(Music_name)):
@@ -49,24 +49,25 @@ if __name__ == "__main__":
 
     print(pred)
     """
-
     counter = 0
-    for class_number in pred:
-        print(class_number)
-        Music_Path=os.path.dirname(Music_name[counter])
-        print(Music_Path)
-        print('{}\\{}'.format(Result_Path[0],class_number))
-        print( os.path.split(os.path.split(Music_name[counter])[0])[1])
-        print( os.path.split(os.path.split(os.path.split(Music_name[counter])[0])[0])[1])
-        shutil.copytree(Music_Path, '{}\\{}\\{}\\{}'.format(Result_Path[0],class_number, os.path.split(os.path.split(os.path.split(Music_name[counter])[0])[0])[1],os.path.split(os.path.split(Music_name[counter])[0])[1]))
-        
-        #print(Save_Path.index("\\{}".format(str(class_number))))
-        counter+= 1
-
     #class数を表示
     counter = np.zeros((max(pred)+1))
     for i in pred:
         counter[i]+=1
     print(counter)
+    input()
+    counter = 0
+    for class_number in pred:
+        #print(class_number)
+        Music_Path=os.path.dirname(Music_name[counter])
+        #print(Music_Path)
+        #print('{}\\{}'.format(Result_Path[0],class_number))
+        #print( os.path.split(os.path.split(Music_name[counter])[0])[1])
+        #print( os.path.split(os.path.split(os.path.split(Music_name[counter])[0])[0])[1])
+        shutil.copytree(Music_Path, '{}\\{}\\{}\\{}'.format(Result_Path[0],class_number, os.path.split(os.path.split(os.path.split(Music_name[counter])[0])[0])[1],os.path.split(os.path.split(Music_name[counter])[0])[1]))
+        
+        #print(Save_Path.index("\\{}".format(str(class_number))))
+        counter+= 1
+
 
     #print(Music_name)
